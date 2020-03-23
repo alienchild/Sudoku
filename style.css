@@ -489,6 +489,7 @@ body {
 }
 .sudoku__table-cell {
   overflow: hidden;
+  background: wheat;
   text-align: center;
   -webkit-transition: all .25s;
   transition: all .25s;
