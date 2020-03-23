@@ -13,376 +13,124 @@ Sudoku - Free Unlimited Sudoku Puzzles and Solver</title>
 <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
 <link rel="manifest" href="/site.webmanifest">
   <meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
-<link rel="stylesheet" href="./style.css">
+<link rel="stylesheet" href="sudokuJS.css">
+<link href='http://fonts.googleapis.com/css?family=Oleo+Script' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
 
 </head>
 <body>
-<!-- partial:index.partial.html -->
-<!--
+	<head>
+		<meta charset="utf-8">
+		<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+		<link rel="stylesheet" media="all" type="text/css" href="sudokuJS.css">
+		<style>
+			* {
+				margin:0; padding:0;
+				-moz-box-sizing: border-box;
+				-webkit-box-sizing: border-box;
+				box-sizing: border-box;
+			}
+			.wrap {
+				padding: 2em 1em;
+				max-width: 100%;
+				margin-left: auto;
+				margin-right: auto;
+			}
 
-  # Javascript Sudoku Puzzle Generator
+			@media(min-width: 30em){
+				.wrap{
+					width: 800px;
+				}
+				.sudoku-board input {
+					font-size: 24px;
+					font-size: 1.5rem;
+				}
+				.sudoku-board .candidates {
+					font-size: .8em;
+				}
+			}
 
-  Generation process is handled in a producer wrapped in
-  a worker that is embedded in html.
+		</style>
 
-  API is designed to be pluggable, but needs more
-  interface to support this. Currently it responds
-  with an array of rows.
 
-  JS code includes:
-    - a utility object, 
-    - an adapter that acts as the communication layer
-      between producer and consumer (app)
-    - app singleton that includes the rendering logic
 
--->
+		<script type="text/javascript" src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+		<script type="text/javascript" src="sudokuJS.js"></script>
+	</head>
 
-<div id='sudoku-app'></div>
+	<body>
+	<div class="wrap">
+		<h1 style="font: 400 100px/1.5 'Pacifico', Helvetica, sans-serif;
+  color: #2b2b2b;
+  text-shadow: 3px 3px 0px rgba(0,0,0,0.1), 7px 7px 0px rgba(0,0,0,0.05);    margin-bottom: 18px;">Play Sudoku!</h1>
 
-<!-- https://github.com/scriptype/bem -->
-<script type='text/javascript'>
-  "use strict";!function(a){if("function"==typeof bootstrap)bootstrap("bem",a);else if("object"==typeof exports&&"object"==typeof module)module.exports=a();else if("function"==typeof define&&define.amd)define(a);else if("undefined"!=typeof ses){if(!ses.ok())return;ses.makeBem=a}else{if("undefined"==typeof window&&"undefined"==typeof self)throw new Error("This environment was not anticipated by bem. Please file a bug.");var b="undefined"!=typeof window?window:self,c=b.bem;b.bem=a(),b.bem.noConflict=function(){return b.bem=c,this}}}(function(){function a(a){"undefined"!=typeof a.modifier&&(c.modifier=a.modifier),"undefined"!=typeof a.element&&(c.element=a.element)}function b(a){if(!d.validate(a))return null;var b=a.block,e=a.element,f=a.modifiers,g=b,h=[];return!!e&&(g+=""+c.element+e),!!f&&Object.keys(f).forEach(function(a){var d=f[a],i="function"==typeof d?d(b,e,f):d;!!i&&h.push(""+g+c.modifier+a+" ")}),(g+" "+h.join("")).slice(0,-1)}var c={element:"__",modifier:"--"},d={messages:{block:"You must specify the name of block.",element:"Element name must be a string.",modifier:"Modifiers must be supplied in the `{name : bool || fn}` style."},blockName:function(a){return"undefined"!=typeof a&&"string"==typeof a&&a.length?!0:(console.warn(this.messages.block),!1)},element:function(a){return"undefined"!=typeof a&&"string"!=typeof a?(console.warn(this.messages.element),!1):!0},modifiers:function(a){return"undefined"==typeof a||"object"==typeof a&&"[object Object]"===toString.call(a)?!0:(console.warn(this.messages.modifier),!1)},validate:function(a){return this.blockName(a.block)&&this.element(a.element)&&this.modifiers(a.modifiers)}};return{setDelimiters:a,makeClassName:b}});
-</script>
-
-<!-- Include Babel to transform code in browser -->
-<script type='text/javascript'
-        src='https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.25/browser-polyfill.min.js'>
-</script>
-<script type='text/javascript'
-        src='https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.25/browser.min.js'>
-</script>
-<div class="social">
-  <h3>Share this page</h3>
-  <a class="share--facebook" href="javascript:void(0)" target="_blank">
-    <i class="fa fa-facebook-square"></i>
-  </a>
-  <a class="share--twitter" href="javascript:void(0)" target="_blank">
-    <i class="fa fa-twitter-square"></i>
-  </a>
-  <a class="share--googleplus" href="javascript:void(0)" target="_blank">
-    <i class="fa fa-google-plus-square"></i>
-  </a>
-   <a class="share--linkedin" href="javascript:void(0)" target="_blank">
-    <i class="fa fa-linkedin-square"></i>
-  </a>
+		<!--show candidates toggle-->
+		<!--genrate board btns-->
+		<div style="padding-bottom: 2em; ">
+<!-- 		<h3 style="text-align: center;">Select Your Level</h3>
+ -->		<button type="button" class="js-generate-board-btn--easy button button--primary3">Easy</button>
+		<button type="button" class="js-generate-board-btn--medium button button--primary3">Medium</button>
+		<button type="button" class="js-generate-board-btn--hard button button--primary3">Hard</button>
+		<button type="button" class="js-generate-board-btn--very-hard button button--primary3">Very Hard</button>
 </div>
-<!-- worker, sudoku api -->
-<script type='text/babel' id='worker'>
-  
-  self.sudoku = null
-  
-  // Worker Setup
-  self.addEventListener('message', (event) => {
-    var options = { method: null }
-    try {
-      options = JSON.parse(event.data);
-    } catch (e) {
-      console.warn('event.data is misformed', event)
-    }
-  
-    switch (options.method) {
-  
-      case 'generate':
-        var { hints, limit } = options
-        self.sudoku = new Sudoku(hints, limit).generate()
 
-        self.postMessage({
-          success: self.sudoku.success,
-          board: self.sudoku.getBoard(),
-          solution: self.sudoku.getSolution()
-        });
-        break;
-  
-      case 'validate':
-        var { map, number, index } = options
-        self.postMessage({
-          result: sudoku.validate(map, number, index)
-        });
-        break;
-  
-    }
-  }, false);
+		<!--the only required html-->
+		<div id="sudoku" class="sudoku-board">
+		</div>
 
-  // API
-  class Sudoku {
-    constructor(hints, limit) {
-      this.hints = hints
-      this.limit = limit || 10000
-  
-      this._logs = {
-        raw: [],
-        incidents: {
-          limitExceeded: 0,
-          notValid: 0,
-          noNumbers: 0
-        }
-      }
-  
-      this.success = null
+		<!--solve buttons-->
+		<button type="button" class="js-solve-step-btn button button--primary3"> Hint</button><button type="button" class="js-solve-all-btn button button--primary3">Solve</button>
+		<!--clear board btn-->
+		<button type="button" class="js-clear-board-btn button button--primary1">Clear</button>
+				<label for="toggleCandidates">Suggest Numbers </label><input id="toggleCandidates" class="js-candidate-toggle" type="checkbox"/>
 
-      this.numbers = () =>
-        new Array(9)
-          .join(" ")
-          .split(" ")
-          .map((num , i) => i + 1)
+	</div>
+<p style="text-align: center;padding-top: 2em;
+}"><a href="https://www.awayn.com">©2020 AWAYN™
+® ALL RIGHTS RESERVED</a></p>
+	<script>
+		var	$candidateToggle = $(".js-candidate-toggle"),
+			$generateBoardBtnEasy = $(".js-generate-board-btn--easy"),
+			$generateBoardBtnMedium = $(".js-generate-board-btn--medium"),
+			$generateBoardBtnHard = $(".js-generate-board-btn--hard"),
+			$generateBoardBtnVeryHard = $(".js-generate-board-btn--very-hard"),
 
-      /*
-        Will be used in initial map. Each row will be
-        consisted of randomly ordered numbers
-      */
-      this.randomRow = () => {
-        var row = []
-        var numbers = this.numbers()
-        while (row.length < 9) {
-          var index = Math.floor(Math.random() * numbers.length)
-          row.push(numbers[index])
-          numbers.splice(index, 1)
-        }
+			$solveStepBtn = $(".js-solve-step-btn"),
+			$solveAllBtn = $(".js-solve-all-btn"),
+			$clearBoardBtn = $(".js-clear-board-btn"),
 
-        return row
-      }
+			mySudokuJS = $("#sudoku").sudokuJS({
+				difficulty: "very hard"
+				//change state of our candidate showing checkbox on change in sudokuJS
+				,candidateShowToggleFn : function(showing){
+					$candidateToggle.prop("checked", showing);
+				}
+			});
 
-      /*
-        This is the dummy placeholder for the
-        final results. Will be overridden through the
-        backtracking process, and at the and, this will
-        be the real results.
-      */
-      this.result = new Array(9 * 9)
-        .join(" ")
-        .split(" ")
-        .map(entry => null)
+		$solveStepBtn.on("click", mySudokuJS.solveStep);
+		$solveAllBtn.on("click", mySudokuJS.solveAll);
+		$clearBoardBtn.on("click", mySudokuJS.clearBoard);
 
-      /*
-        Will be used as the nodeTree in the
-        process of backtracking. Each cell has 9 alternative
-        paths (randomly ordered).
-      */
-      this.map = new Array(9 * 9)
-        .join(" ")
-        .split(" ")
-        .map(path => this.randomRow())
+		$generateBoardBtnEasy.on("click", function(){
+			mySudokuJS.generateBoard("easy");
+		});
+		$generateBoardBtnMedium.on("click", function(){
+			mySudokuJS.generateBoard("medium");
+		});
+		$generateBoardBtnHard.on("click", function(){
+			mySudokuJS.generateBoard("hard");
+		});
+		$generateBoardBtnVeryHard.on("click", function(){
+			mySudokuJS.generateBoard("very hard");
+		});
 
-      /*
-        Will be used as history in the backtracking
-        process for checking if a candidate number is valid.
-      */
-      this.stack = []
-
-      return this
-    }
-  
-    toRows(arr) {
-      var row = 0
-      var asRows = new Array(9)
-        .join(" ")
-        .split(" ")
-        .map(row => [])
-  
-      for (let [index, entry] of arr.entries()) {
-        asRows[row].push(entry)
-
-        if ( !((index + 1) % 9) ) {
-          row += 1
-        }
-      }
-
-      return asRows
-    }
-
-    no(path, index, msg) {
-      var number = path[path.length - 1]
-      this._logs.raw.push(`no: @${index} [${number}] ${msg} ${path} `)
-    }
-
-    yes(path, index) {
-      this._logs.raw.push(`yes: ${index} ${path}`)
-    }
-  
-    finalLog() {
-      console.groupCollapsed('Raw Logs')
-      console.groupCollapsed(this._logs.raw)
-      console.groupEnd()
-      console.groupEnd()
-      console.groupCollapsed('Incidents')
-      console.groupCollapsed(this._logs.incidents)
-      console.groupEnd()
-      console.groupEnd()
-    }
-
-    getBoard() {
-      return this.toRows(this.substractCells())
-    }
-
-    getSolution() {
-      return this.toRows(this.result)
-    }
-
-    substractCells() {
-      var _getNonEmptyIndex = () => {
-        var index = Math.floor(Math.random() * _result.length)
-        return _result[index] ? index : _getNonEmptyIndex()
-      }
-
-      var _result = this.result.filter(() => true)
-
-      while (
-        _result.length - this.hints >
-        _result.filter(n => !n).length
-      ) {
-        _result[_getNonEmptyIndex()] = ''
-      }
-
-      return _result
-    }
-  
-    validate(map, number, index) {
-      var rowIndex = Math.floor(index / 9)
-      var colIndex = index % 9
-
-      var row = map.slice(
-        rowIndex * 9, 9 * (rowIndex + 1)
-      )
-
-      var col = map.filter((e, i) =>
-        i % 9 === colIndex
-      )
-
-      var boxRow = Math.floor(rowIndex / 3)
-      var boxCol = Math.floor(colIndex / 3)
-
-      var box = map.filter((e, i) =>
-        Math.floor(Math.floor(i / 9) / 3) === boxRow &&
-        Math.floor((i % 9) / 3) === boxCol
-      )
-
-      return {
-        row: {
-          first: row.indexOf(number),
-          last: row.lastIndexOf(number)
-        },
-        col: {
-          first: col.indexOf(number),
-          last: col.lastIndexOf(number)
-        },
-        box: {
-          first: box.indexOf(number),
-          last: box.lastIndexOf(number)
-        }
-      }
-    }
-
-    _validate(map, index) {
-      if (!map[index].length) {
-        return false
-      }
-
-      this.stack.splice(index, this.stack.length)
-  
-      var path = map[index]
-      var number = path[path.length - 1]
-  
-      var didFoundNumber = this.validate(this.stack, number, index)
-  
-      return (
-        didFoundNumber.col.first === -1 &&
-        didFoundNumber.row.first === -1 &&
-        didFoundNumber.box.first === -1
-      )
-    }
-
-    _generate(map, index) {
-      if (index === 9 * 9) {
-        return true
-      }
-
-      if (--this.limit < 0) {
-        this._logs.incidents.limitExceeded++
-        this.no(map[index], index, 'limit exceeded')
-        return false
-      }
-
-      var path = map[index]
-
-      if (!path.length) {
-        map[index] = this.numbers()
-        map[index - 1].pop()
-        this._logs.incidents.noNumbers++
-        this.no(path, index, 'no numbers in it')
-        return false
-      }
-
-      var currentNumber = path[path.length - 1]
-
-      var isValid = this._validate(map, index)
-      if (!isValid) {
-        map[index].pop()
-        map[index + 1] = this.numbers()
-        this._logs.incidents.notValid++
-        this.no(path, index, 'is not valid')
-        return false
-      } else {
-        this.stack.push(currentNumber)
-      }
-
-      for (let number of path.entries()) {
-        if (this._generate(map, index + 1)) {
-          this.result[index] = currentNumber
-          this.yes(path, index)
-          return true
-        }
-      }
-
-      return false
-    }
-
-    generate() {
-      if (this._generate(this.map, 0)) {
-        this.success = true
-      }
-
-      this.finalLog()
-
-      return this
-    }
-
-  }
-</script>
-<!-- partial -->
-
-  <script src='https://cdn.rawgit.com/MaxArt2501/object-observe/master/dist/object-observe-lite.min.js'></script><script  src="./script.js"></script>
-  <script data-ad-client="ca-pub-9350095694074218" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158108611-2"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-158108611-2');
-</script>
-
-<span class="show-on-lg">
-  <h1 class="sudoku__title3">
-
-          <span class="show-on-sm">
-            <a href="www.awayn.com">©2020 AWAYN™
-® ALL RIGHTS RESERVED</a>
-          </span>
-
-          <span class="show-on-md">
-            <a href="www.awayn.com">©2020 AWAYN™
-® ALL RIGHTS RESERVED</a>
-          </span>
-
-          <span class="show-on-lg">
-           <a href="https://www.awayn.com">©2020 AWAYN™
-® ALL RIGHTS RESERVED</a>
-          </span>
-
-        </h1>
-
-          </span>
-
-</body>
+		$candidateToggle.on("change", function(){
+			if($candidateToggle.is(":checked"))
+				mySudokuJS.showCandidates();
+			else
+				mySudokuJS.hideCandidates();
+		});
+		$candidateToggle.trigger("change");
+	</script>
+	</body>
 </html>
