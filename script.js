@@ -547,7 +547,7 @@ var SudokuApp = (config => {
     
               ${buttonComponent({
       id: 'generate-button',
-      text: ['New Board', 'New Board', 'New'],
+      text: ['New Game', 'New Game', 'New'],
       mods: 'primary' })
     }
     

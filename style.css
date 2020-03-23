@@ -228,18 +228,30 @@ body {
   transition: all 0.2s;
 }
 .button--primary {
-  color: #4242d7;
-  font-weight: 600;
+  color:white;
+  font-size: 20px;
+  border-color:#8c5324;
+      border-width: 0 0 4px 0;
+    box-shadow: 2px 8px 10px rgba(0, 0, 0, 0.79);
+      background-image: url(images/tex_wood.jpg);
 }
+
 .button--primary:hover, .button--primary:focus, .button--primary:active {
-  border-color: #4242d7;
-  background: #4242d7;
+    top: 2px;
+    border-width: 0 0 6px 0;
+   background-image: url(images/tex_wood_copy.jpg);
+
 }
 .button--primary:focus {
   box-shadow: 0 0 5px #4242d7;
 }
 .button--secondary {
-  color: #d74242;
+
+  color: #ffffff;
+    box-shadow: 7px -5px 30px rgba(0,0,0,0.4);
+    background: #d74242;
+    border: solid #d01d2d 2px;
+    font-weight: 600;
 }
 .button--secondary:hover, .button--secondary:focus, .button--secondary:active {
   border-color: #d74242;
@@ -489,7 +501,7 @@ body {
 }
 .sudoku__table-cell {
   overflow: hidden;
-  background: wheat;
+  background: #f2ebe3;
   text-align: center;
   -webkit-transition: all .25s;
   transition: all .25s;
@@ -511,4 +523,35 @@ body {
 .sudoku__table-cell--editable-error:focus {
   color: #eee;
   background: #f45;
+}
+.share--facebook {
+  color: #3b5998;
+
+  &:hover {
+    color: lighten(#3b5998, 10%);
+  }
+}
+
+.share--twitter {
+  color: #55acee;
+
+  &:hover {
+    color: lighten(#55acee, 10%);
+  }
+}
+
+.share--googleplus {
+  color: #dc4e41;
+
+  &:hover {
+    color: lighten(#dc4e41, 10%);
+  }
+}
+
+.share--linkedin {
+  color: #0077b5;
+
+  &:hover {
+    color: lighten(#0077b5, 10%);
+  }
 }
