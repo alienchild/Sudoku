@@ -132,6 +132,7 @@ body {
 
   .show-on-lg {
     display: block;
+        display: block;
   }
 }
 @-webkit-keyframes progress {
@@ -455,6 +456,17 @@ body {
   }
   .sudoku__title {
     font-size: 2em;
+    text-align: center;
+  }
+   .sudoku__title3 {
+    font-size: 1em;
+    color: black;
+    text-align: center;
+  }
+    .sudoku__title3 a {
+    font-size: 1em;
+    color: black;
+    text-align: center;
   }
   .sudoku__table {
     font-size: 1.75em;
@@ -493,6 +505,9 @@ body {
 }
 .sudoku__description {
   max-width: 640px;
+  background: aliceblue;
+    line-height: 1.4;
+    padding: 20px;
   line-height: 1.4;
   font-weight: 100;
 }
@@ -524,34 +539,4 @@ body {
   color: #eee;
   background: #f45;
 }
-.share--facebook {
-  color: #3b5998;
 
-  &:hover {
-    color: lighten(#3b5998, 10%);
-  }
-}
-
-.share--twitter {
-  color: #55acee;
-
-  &:hover {
-    color: lighten(#55acee, 10%);
-  }
-}
-
-.share--googleplus {
-  color: #dc4e41;
-
-  &:hover {
-    color: lighten(#dc4e41, 10%);
-  }
-}
-
-.share--linkedin {
-  color: #0077b5;
-
-  &:hover {
-    color: lighten(#0077b5, 10%);
-  }
-}
